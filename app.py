@@ -18,10 +18,9 @@ print("MODEL FILES:", os.listdir("model"))
 
 # Load trained model
 model = tf.keras.models.load_model(
-    "model/crop_disease_model.h5",
+    "model/crop_disease_model.keras",
     compile=False
 )
-
 # Actual classes from dataset
 class_names = [
     "Pepper Bell Bacterial Spot",
