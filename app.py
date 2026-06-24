@@ -8,9 +8,12 @@ import traceback
 app = Flask(__name__)
 CORS(app)
 
+import os
+print("MODEL FILES:", os.listdir("model"))
+
 # Load trained model
 model = tf.keras.models.load_model(
-    "model/crop_disease_model.keras",
+    "model/crop_disease_model.h5",
     compile=False
 )
 
