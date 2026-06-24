@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="result-card">
+
+    <div class="result-box">
+
+        <h1>🌿 Analysis Complete</h1>
+
+        <h2>Disease Detected</h2>
+        <p>{{ disease }}</p>
+
+        <h2>Confidence</h2>
+        <p>{{ confidence }}%</p>
+
+        <div class="progress">
+            <div class="progress-bar"></div>
+        </div>
+
+        <script>
+            document.querySelector(".progress-bar").style.width = "{{ confidence }}%";
+        </script>
+
+        <h2>Treatment Recommendation</h2>
+        <p>{{ treatment }}</p>
+
+        <a href="/">
+            <button type="button">
+                Analyze Another Leaf
+            </button>
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

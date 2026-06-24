@@ -1,0 +1,162 @@
+body{
+    font-family: Arial;
+    text-align:center;
+    margin-top:50px;
+}
+
+h1{
+    color:green;
+}
+
+button{
+    padding:10px 20px;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#f4fdf5;
+}
+
+/* HERO SECTION */
+
+.hero{
+    height:100vh;
+    background:
+    linear-gradient(
+        rgba(0,0,0,0.55),
+        rgba(0,0,0,0.55)
+    ),
+    url("https://images.unsplash.com/photo-1500937386664-56d1dfef3854");
+    background-size:cover;
+    background-position:center;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.content{
+    text-align:center;
+    color:white;
+    width:90%;
+    max-width:700px;
+}
+
+.content h1{
+    font-size:4rem;
+    margin-bottom:15px;
+}
+
+.content p{
+    font-size:1.3rem;
+    margin-bottom:30px;
+}
+
+.upload-box{
+    display:block;
+    background:white;
+    color:#2e7d32;
+    padding:20px;
+    border-radius:15px;
+    cursor:pointer;
+    margin-bottom:20px;
+    font-weight:bold;
+}
+
+.upload-box input{
+    display:none;
+}
+
+button{
+    border:none;
+    padding:15px 30px;
+    border-radius:12px;
+    background:#2e7d32;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:translateY(-3px);
+}
+
+/* RESULT PAGE */
+
+.result-card{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.result-box{
+    width:90%;
+    max-width:700px;
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+.result-box h2{
+    margin-top:20px;
+    color:#2e7d32;
+}
+
+.progress{
+    width:100%;
+    height:20px;
+    background:#ddd;
+    border-radius:20px;
+    overflow:hidden;
+    margin:15px 0;
+}
+
+.progress-bar{
+    height:100%;
+    background:#4CAF50;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+    .content h1{
+        font-size:2.5rem;
+    }
+
+    .content p{
+        font-size:1rem;
+    }
+
+}
+
+.progress{
+    width:100%;
+    height:20px;
+    background:#ddd;
+    border-radius:20px;
+    overflow:hidden;
+    margin:15px 0;
+}
+
+.progress-bar{
+    height:100%;
+    background:#4CAF50;
+    width:0%;
+    transition:width 1s ease;
+}
+
+#upload-status{
+    margin-top:15px;
+    margin-bottom:20px;
+    font-size:16px;
+}
