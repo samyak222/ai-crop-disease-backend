@@ -6,7 +6,12 @@ from PIL import Image
 import traceback
 
 app = Flask(__name__)
-CORS(app)
+CORS(
+    app,
+    resources={r"/*": {"origins": [
+        "https://crop-frontend-navy.vercel.app"
+    ]}}
+)
 
 import os
 print("MODEL FILES:", os.listdir("model"))
