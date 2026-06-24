@@ -1,48 +1,30 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import tensorflow as tf
+import tflite_runtime.interpreter as tflite
 import numpy as np
 from PIL import Image
 import traceback
+import io
 
 app = Flask(__name__)
-CORS(
-    app,
-    resources={r"/*": {"origins": [
-        "https://crop-frontend-navy.vercel.app"
-    ]}}
-)
+CORS(app, resources={r"/*": {"origins": ["https://crop-frontend-navy.vercel.app"]}})
 
-import os
-print("MODEL FILES:", os.listdir("model"))
-
-# Load trained model
-model = tf.keras.models.load_model(
-    "model/crop_disease_model.keras",
-    compile=False
-)
+print("Loading model...")
+interpreter = tflite.Interpreter(model_path="model/crop_disease_model.tflite")
+interpreter.allocate_tensors()
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
 print("MODEL LOADED SUCCESSFULLY")
-# Actual classes from dataset
+
 class_names = [
-    "Pepper Bell Bacterial Spot",
-    "Pepper Bell Healthy",
-    "PlantVillage",
-    "Potato Early Blight",
-    "Potato Late Blight",
-    "Potato Healthy",
-    "Tomato Bacterial Spot",
-    "Tomato Early Blight",
-    "Tomato Late Blight",
-    "Tomato Leaf Mold",
-    "Tomato Septoria Leaf Spot",
-    "Tomato Spider Mites",
-    "Tomato Target Spot",
-    "Tomato Yellow Leaf Curl Virus",
-    "Tomato Mosaic Virus",
-    "Tomato Healthy"
+    "Pepper Bell Bacterial Spot", "Pepper Bell Healthy", "PlantVillage",
+    "Potato Early Blight", "Potato Late Blight", "Potato Healthy",
+    "Tomato Bacterial Spot", "Tomato Early Blight", "Tomato Late Blight",
+    "Tomato Leaf Mold", "Tomato Septoria Leaf Spot", "Tomato Spider Mites",
+    "Tomato Target Spot", "Tomato Yellow Leaf Curl Virus",
+    "Tomato Mosaic Virus", "Tomato Healthy"
 ]
 
-# Treatments
 treatments = {
     "Pepper Bell Bacterial Spot": "Use copper-based sprays and remove infected leaves.",
     "Pepper Bell Healthy": "No treatment required.",
@@ -62,51 +44,31 @@ treatments = {
     "Tomato Healthy": "No treatment required."
 }
 
-
-def preprocess_image(image):
-    image = image.resize((224, 224))
-    image = np.array(image) / 255.0
-    image = np.expand_dims(image, axis=0)
-    return image
-
-
 @app.route("/")
 def home():
-    return jsonify({
-        "message": "AI Crop Disease Detection API Running"
-    })
-
+    return jsonify({"message": "AI Crop Disease Detection API Running"})
 
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
-        print("STEP 1")
-
         if "file" not in request.files:
             return jsonify({"error": "No image uploaded"}), 400
 
-        print("STEP 2")
-
         file = request.files["file"]
+        image = Image.open(io.BytesIO(file.read())).convert("RGB")
+        image = image.resize((224, 224))
 
-        image = Image.open(file).convert("RGB")
-        processed = preprocess_image(image)
+        img_array = np.array(image, dtype=np.float32) / 255.0
+        img_array = np.expand_dims(img_array, axis=0)
 
-        print("STEP 3:", processed.shape)
-
-        prediction = model.predict(processed, verbose=0)
-
-        print("STEP 4: Prediction Done")
+        interpreter.set_tensor(input_details[0]['index'], img_array)
+        interpreter.invoke()
+        prediction = interpreter.get_tensor(output_details[0]['index'])[0]
 
         class_index = int(np.argmax(prediction))
         confidence = float(np.max(prediction)) * 100
-
         disease = class_names[class_index]
-
-        treatment = treatments.get(
-            disease,
-            "Consult an agricultural expert."
-        )
+        treatment = treatments.get(disease, "Consult an agricultural expert.")
 
         return jsonify({
             "disease": disease,
@@ -117,8 +79,6 @@ def predict():
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
-
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
