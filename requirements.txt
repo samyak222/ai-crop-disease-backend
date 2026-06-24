@@ -1,6 +1,6 @@
-Flask
-flask-cors
-tensorflow
-numpy
-Pillow
-gunicorn
+Flask==3.0.3
+flask-cors==5.0.0
+tensorflow-cpu==2.16.1
+numpy==1.26.4
+Pillow==10.4.0
+gunicorn==23.0.0
