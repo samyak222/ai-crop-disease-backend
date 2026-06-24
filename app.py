@@ -21,6 +21,7 @@ model = tf.keras.models.load_model(
     "model/crop_disease_model.keras",
     compile=False
 )
+print("MODEL LOADED SUCCESSFULLY")
 # Actual classes from dataset
 class_names = [
     "Pepper Bell Bacterial Spot",
