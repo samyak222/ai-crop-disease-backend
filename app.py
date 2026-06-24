@@ -80,37 +80,32 @@ def home():
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
+        print("STEP 1")
+
         if "file" not in request.files:
             return jsonify({"error": "No image uploaded"}), 400
+
+        print("STEP 2")
 
         file = request.files["file"]
 
         image = Image.open(file).convert("RGB")
         processed = preprocess_image(image)
 
+        print("STEP 3:", processed.shape)
+
         prediction = model.predict(processed, verbose=0)
+
+        print("STEP 4: Prediction Done")
 
         class_index = int(np.argmax(prediction))
         confidence = float(np.max(prediction)) * 100
-
-        print("\n====================")
-        print("Prediction:", prediction[0])
-        print("Class Index:", np.argmax(prediction))
-        print("Max Confidence:", np.max(prediction))
-        print("====================\n")
-
-        if class_index >= len(class_names):
-            return jsonify({
-                "disease": f"Unknown Class {class_index}",
-                "confidence": round(confidence, 2),
-                "treatment": "Class mapping missing."
-            })
 
         disease = class_names[class_index]
 
         treatment = treatments.get(
             disease,
-            "Consult an agricultural expert for treatment recommendations."
+            "Consult an agricultural expert."
         )
 
         return jsonify({
@@ -120,13 +115,9 @@ def predict():
         })
 
     except Exception as e:
-        print("\n===== ERROR =====")
         traceback.print_exc()
-        print("=================\n")
+        return jsonify({"error": str(e)}), 500
 
-        return jsonify({
-            "error": str(e)
-        }), 500
 
 
 if __name__ == "__main__":
