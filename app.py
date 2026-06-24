@@ -10,7 +10,7 @@ CORS(app)
 
 # Load trained model
 model = tf.keras.models.load_model(
-    "model/crop_disease_model.h5",
+    "model/crop_disease_model.keras",
     compile=False
 )
 
